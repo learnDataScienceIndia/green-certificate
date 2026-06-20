@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Certificate</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --dark-green: #145a23;
+            --light-green: #208736;
+            --text-dark: #222222;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #e5e7eb;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Controls Area */
+        .controls {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 297mm;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: opacity 0.2s;
+        }
+        
+        .btn:hover { opacity: 0.9; }
+
+        .btn-primary { background-color: var(--dark-green); }
+        .btn-secondary { background-color: #0c2b5c; }
+        
+        .tip-text {
+            font-size: 13px;
+            color: #555;
+            text-align: center;
+            margin: 0;
+            background: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Certificate Container */
+        .certificate-wrapper {
+            background-color: white;
+            width: 297mm; /* Default Landscape */
+            min-height: 210mm;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 8mm; 
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s, min-height 0.3s;
+        }
+
+        /* Border */
+        .certificate-border {
+            border: 2px solid var(--dark-green);
+            flex-grow: 1;
+            box-sizing: border-box;
+            padding: 8mm 12mm; 
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between; /* Keeps logo and text on opposite corners */
+            align-items: flex-start;
+            margin-bottom: 5px;
+            flex-wrap: nowrap; /* Prevent wrapping so they stay in corners */
+            gap: 10px;
+        }
+
+        .logo img {
+            width: 130px; /* Reduced logo size */
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .contact-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            font-size: 10px; /* Reduced font size */
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .contact-row i {
+            color: var(--text-dark);
+            width: 12px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        /* Date & Title Area */
+        .middle-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .issue-date {
+            position: absolute;
+            left: 0;
+            top: 15px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark-green);
+        }
+
+        .issue-date span {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* Leaves Icon */
+        .leaves-icon {
+            color: var(--dark-green);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 2px;
+        }
+        .leaves-icon i:nth-child(1) { font-size: 18px; transform: rotate(-30deg); }
+        .leaves-icon i:nth-child(2) { font-size: 28px; }
+        .leaves-icon i:nth-child(3) { font-size: 18px; transform: rotate(30deg); }
+
+        /* Title Line */
+        .title-wrapper {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 15px;
+        }
+
+        .title-line {
+            flex-grow: 1;
+            height: 2px;
+            background-color: var(--dark-green);
+        }
+
+        .title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin: 0;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        /* Two Column Details */
+        .details-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 0;
+            width: 100%;
+        }
+
+        .vertical-divider {
+            width: 1px;
+            background-color: #cccccc;
+            margin: 5px 0;
+        }
+
+        .details-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            position: relative;
+            min-width: 0;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            font-size: 12px;
+            position: relative;
+            word-break: break-word;
+        }
+
+        .detail-icon {
+            color: var(--light-green);
+            width: 18px;
+            font-size: 12px;
+            text-align: left;
+            margin-top: 3px;
+        }
+
+        .detail-label {
+            color: var(--dark-green);
+            font-weight: 700;
+            width: 130px;
+            flex-shrink: 0;
+        }
+
+        .detail-value {
+            color: var(--text-dark);
+            font-weight: 500;
+            flex-grow: 1;
+        }
+
+        /* Dynamic Add/Remove Fields */
+        .remove-row-btn {
+            position: absolute;
+            left: -20px;
+            top: 2px;
+            width: 14px;
+            height: 14px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-weight: bold;
+        }
+
+        .detail-row:hover .remove-row-btn {
+            opacity: 1;
+        }
+
+        .add-row-btn {
+            background-color: transparent;
+            color: var(--light-green);
+            border: 1px dashed var(--light-green);
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 2px;
+            align-self: flex-start;
+            transition: all 0.2s;
+        }
+
+        .add-row-btn:hover {
+            background-color: rgba(32, 135, 54, 0.1);
+        }
+
+        /* Paragraphs */
+        .content-text {
+            font-size: 11px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            text-align: justify;
+            margin-bottom: 15px;
+            flex-grow: 1; 
+        }
+
+        .content-text p {
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+
+        .highlight-red {
+            color: red;
+        }
+
+        .certify-statement {
+            text-align: center;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-top: 15px !important;
+            font-size: 11px;
+        }
+
+        /* Footer Accreditations */
+        .footer-accreditations {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .footer-divider {
+            width: 1px;
+            height: 35px;
+            background-color: #e0e0e0;
+        }
+
+        .acc-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .acc-item img {
+            height: 38px;
+            object-fit: contain;
+        }
+
+        .acc-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .acc-text strong {
+            color: #0c2b5c;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        
+        .acc-text span {
+            color: #555;
+            font-size: 7px;
+            line-height: 1.2;
+        }
+
+        /* --- PORTRAIT MODE OVERRIDES --- */
+        .portrait-mode .details-section {
+            flex-direction: column;
+            gap: 10px;
+        }
+        .portrait-mode .vertical-divider {
+            width: 100%;
+            height: 1px;
+            margin: 5px 0;
+        }
+        .portrait-mode .footer-accreditations {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .portrait-mode .footer-divider {
+            display: none;
+        }
+        
+        /* Removed portrait header centering so it stays in corners */
+        .portrait-mode .header {
+            /* Keep justify-content: space-between from base class */
+            align-items: flex-start; 
+        }
+        .portrait-mode .contact-row {
+            justify-content: flex-end; 
+            flex-direction: row; /* keep icon on left */
+        }
+        
+        /* Issue date position adjusted for portrait */
+        .portrait-mode .issue-date {
+            position: relative;
+            top: 0;
+            margin-bottom: 10px;
+        }
+
+        /* Editables */
+        [contenteditable="true"] {
+            outline: none;
+            border-bottom: 1px dashed transparent;
+            transition: all 0.2s;
+        }
+
+        [contenteditable="true"]:hover {
+            border-bottom: 1px dashed #ccc;
+        }
+        
+        [contenteditable="true"]:focus {
+            border-bottom: 1px dashed var(--dark-green);
+            background-color: rgba(20, 90, 35, 0.05);
+        }
+
+        /* --- DRAGGABLE & RESIZABLE IMAGES --- */
+        .draggable-image {
+            display: inline-block;
+            cursor: move;
+            border: 1px solid transparent;
+        }
+        .draggable-image.active {
+            border: 1px dashed #0c2b5c;
+            background: rgba(255,255,255,0.5);
+        }
+        .draggable-image .resizer {
+            width: 12px;
+            height: 12px;
+            background: #0B7C3B;
+            position: absolute;
+            right: -6px;
+            bottom: -6px;
+            cursor: nwse-resize;
+            display: none;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        .draggable-image.active .resizer {
+            display: block;
+        }
+        .draggable-image .remove-btn {
+            width: 22px;
+            height: 22px;
+            background: #e74c3c;
+            color: white;
+            position: absolute;
+            top: -11px;
+            right: -11px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            font-weight: bold;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .draggable-image.active .remove-btn {
+            display: block;
+        }
+
+        /* Print Settings */
+        @media print {
+            @page { margin: 0; }
+            body { 
+                background-color: white; 
+                padding: 0; 
+                margin: 0; 
+            }
+            .controls { display: none; }
+            .certificate-wrapper { 
+                box-shadow: none; 
+                margin: 0; 
+                padding: 8mm; 
+                width: 100vw !important;
+                height: 100vh !important; 
+                min-height: 100vh !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .certificate-border {
+                border: 2px solid var(--dark-green);
+                padding: 8mm 12mm;
+            }
+            [contenteditable="true"] { border-bottom: none !important; background-color: transparent !important; }
+            .draggable-image { border: none !important; background: transparent !important; }
+            .resizer, .draggable-image .remove-btn { display: none !important; }
+            
+            /* Hide UI elements during print */
+            .remove-row-btn { display: none !important; }
+            .add-row-btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="printCertificate('landscape')">
+                <i class="fa-solid fa-file-pdf"></i> Download Landscape
+            </button>
+            <button class="btn btn-primary" onclick="printCertificate('portrait')">
+                <i class="fa-solid fa-file-pdf"></i> Download Portrait
+            </button>
+            <button class="btn btn-secondary" onclick="document.getElementById('imageUpload').click()">
+                <i class="fa-solid fa-image"></i> Add Image
+            </button>
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
+        </div>
+        <p class="tip-text">
+            <i class="fa-solid fa-circle-info" style="color:#0B7C3B;"></i> <b>Tips:</b> Every text is editable. Hover over details to Add/Remove fields. Paste (Ctrl+V) images to add and drag them!
+        </p>
+    </div>
+
+    <div class="certificate-wrapper" id="certificate">
+        <div class="certificate-border">
+            
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">
+                    <img src="https://github.com/learnDataScienceIndia/signature/blob/0fa070974f7c06bd9b8e544b431c8d56c19c57af/t%20logo.png?raw=true" alt="Reloop Recycling">
+                </div>
+                <div class="contact-info">
+                    <div class="contact-row">
+                        <span contenteditable="true">Telephone No. +971 04-332-6011</span>
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+                    <div class="contact-row">
+                        <span contenteditable="true">RA08 TC05 JAFZA, Dubai, UAE</span>
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div class="contact-row">
+                        <span contenteditable="true">Website: www.reloopglobal.com</span>
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <div class="contact-row">
+                        <span contenteditable="true">Email ID: info@reloopglobal.com</span>
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date and Title -->
+            <div class="middle-header">
+                <div class="issue-date">
+                    <span contenteditable="true" style="color: var(--dark-green); font-weight: 700;">Issue Date:</span> <span contenteditable="true">9<sup>th</sup> March 2026</span>
+                </div>
+                
+                <div class="leaves-icon">
+                    <i class="fa-solid fa-leaf"></i>
+                    <i class="fa-solid fa-leaf"></i>
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                
+                <div class="title-wrapper">
+                    <div class="title-line"></div>
+                    <h1 class="title" contenteditable="true">GREEN CERTIFICATE</h1>
+                    <div class="title-line"></div>
+                </div>
+            </div>
+
+            <!-- Details -->
+            <div class="details-section">
+                <!-- Left -->
+                <div class="details-col" id="col-left">
+                    <div class="detail-row">
+                        <div class="remove-row-btn" onclick="this.parentElement.remove()" title="Remove this field">×</div>
+                        <i class="fa-solid fa-chevron-right detail-icon"></i>
+                        <div class="detail-label" contenteditable="true">Company Name:</div>
+                        <div class="detail-value" contenteditable="true">Eurotech Metals</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="remove-row-btn" onclick="this.parentElement.remove()" title="Remove this field">×</div>
+                        <i class="fa-solid fa-chevron-right detail-icon"></i>
+                        <div class="detail-label" contenteditable="true">Date Received:</div>
+                        <div class="detail-value" contenteditable="true">18<sup>th</sup> February 2026</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="remove-row-btn" onclick="this.parentElement.remove()" title="Remove this field">×</div>
+                        <i class="fa-solid fa-chevron-right detail-icon"></i>
+                        <div class="detail-label" contenteditable="true">Job Completed On:</div>
+                        <div class="detail-value" contenteditable="true">27<sup>th</sup> February 2026</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="remove-row-btn" onclick="this.parentElement.remove()" title="Remove this field">×</div>
+                        <i class="fa-solid fa-chevron-right detail-icon"></i>
+                        <div class="detail-label" contenteditable="true">Reference No:</div>
+                        <div class="detail-value" contenteditable="true">RRF-GC-001/Mar/2026</div>
+                    </div>
+                    <button class="add-row-btn" onclick="addField('col-left')">+ Add Field</button>
+                </div>
+
+                <div class="vertical-divider"></div>
+
+                <!-- Right -->
+                <div class="details-col" id="col-right">
+                    <div class="detail-row">
+                        <div class="remove-row-btn" onclick="this.parentElement.remove()" title="Remove this field">×</div>
+                        <i class="fa-solid fa-chevron-right detail-icon"></i>
+                        <div class="detail-label" contenteditable="true">Waste Description:</div>
+                        <div class="detail-value" contenteditable="true">IT Accessories</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="remove-row-btn" onclick="this.parentElement.remove()" title="Remove this field">×</div>
+                        <i class="fa-solid fa-chevron-right detail-icon"></i>
+                        <div class="detail-label" contenteditable="true">Total Quantity:</div>
+                        <div class="detail-value" contenteditable="true">72 Units</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="remove-row-btn" onclick="this.parentElement.remove()" title="Remove this field">×</div>
+                        <i class="fa-solid fa-chevron-right detail-icon"></i>
+                        <div class="detail-label" contenteditable="true">Total Received:</div>
+                        <div class="detail-value" contenteditable="true">1 Lot</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="remove-row-btn" onclick="this.parentElement.remove()" title="Remove this field">×</div>
+                        <i class="fa-solid fa-chevron-right detail-icon"></i>
+                        <div class="detail-label" contenteditable="true">Remarks:</div>
+                        <div class="detail-value" contenteditable="true">100% Recycled and 0 landfill</div>
+                    </div>
+                    <button class="add-row-btn" onclick="addField('col-right')">+ Add Field</button>
+                </div>
+            </div>
+
+            <!-- Paragraphs -->
+            <div class="content-text">
+                <p contenteditable="true">
+                    These items were received by Reloop Recycling FZE. We apply a <span class="highlight-red">manual</span> dismantling process at the JAFZA site in order to assure the maximum volume of secondary raw materials. These raw materials are recovered while minimizing negative effects on the environment. Every effort has been made to ensure the recycling of these materials has resulted in a minimum carbon footprint.
+                </p>
+                <p contenteditable="true">
+                    Our processes strictly adhere to international standards established by the United Nations Environment Programme and the WEEE (Directive 2002/95/EC). Our work falls under Directive 2002/96/EC, which is promoting the collecting and recycling of electrical and electronic equipment. The factories we work with all fall under these guidelines.
+                </p>
+                <p class="certify-statement" contenteditable="true">
+                    Reloop Recycling FZE certifies that the recycling of these materials has not caused harm to the health<br>
+                    or the environment, either within or outside the United Arab Emirates.
+                </p>
+            </div>
+
+            <!-- Footer / Accreditations -->
+            <div class="footer-accreditations">
+                <!-- ISO 9001 -->
+                <div class="acc-item">
+                    <img src="https://github.com/learnDataScienceIndia/signature/blob/main/WhatsApp%20Image%202026-04-10%20at%2017.43.12.jpeg?raw=true" alt="ISO 9001">
+                    <div class="acc-text">
+                        <strong contenteditable="true">ISO 9001:2015</strong>
+                        <span contenteditable="true">Quality Management</span>
+                    </div>
+                </div>
+                <div class="footer-divider"></div>
+                
+                <!-- ISO 45001 -->
+                <div class="acc-item">
+                    <img src="https://github.com/learnDataScienceIndia/signature/blob/main/WhatsApp%20Image%202026-04-10%20at%2017.43.43.jpeg?raw=true" alt="ISO 45001">
+                    <div class="acc-text">
+                        <strong contenteditable="true">ISO 45001:2018</strong>
+                        <span contenteditable="true">Occupational Health<br>& Safety Management</span>
+                    </div>
+                </div>
+                <div class="footer-divider"></div>
+                
+                <!-- ISO 27001 -->
+                <div class="acc-item">
+                    <img src="https://github.com/learnDataScienceIndia/signature/blob/main/WhatsApp%20Image%202026-04-10%20at%2017.43.54.jpeg?raw=true" alt="ISO 27001">
+                    <div class="acc-text">
+                        <strong contenteditable="true">ISO 27001:2022</strong>
+                        <span contenteditable="true">Information Security<br>Management</span>
+                    </div>
+                </div>
+                <div class="footer-divider"></div>
+                
+                <!-- ISO 14001 -->
+                <div class="acc-item">
+                    <img src="https://github.com/learnDataScienceIndia/signature/blob/main/WhatsApp%20Image%202026-04-10%20at%2017.43.24.jpeg?raw=true" alt="ISO 14001">
+                    <div class="acc-text" style="color:var(--light-green)">
+                        <strong contenteditable="true" style="color:var(--light-green)">ISO 14001:2015</strong>
+                        <span contenteditable="true">Environmental<br>Management</span>
+                    </div>
+                </div>
+                <div class="footer-divider"></div>
+                
+                <!-- Crown & UAF -->
+                <div class="acc-item">
+                    <img src="https://github.com/learnDataScienceIndia/signature/blob/main/WhatsApp%20Image%202026-04-10%20at%2017.46.49.jpeg?raw=true" alt="Accreditations" style="height: 45px;">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- ADD FIELD LOGIC ---
+        function addField(columnId) {
+            const col = document.getElementById(columnId);
+            const btn = col.querySelector('.add-row-btn');
+            
+            const row = document.createElement('div');
+            row.className = 'detail-row';
+            row.innerHTML = `
+                <div class="remove-row-btn" onclick="this.parentElement.remove()" title="Remove this field">×</div>
+                <i class="fa-solid fa-chevron-right detail-icon"></i>
+                <div class="detail-label" contenteditable="true">New Header:</div>
+                <div class="detail-value" contenteditable="true">New Value</div>
+            `;
+            
+            col.insertBefore(row, btn);
+        }
+
+        // --- PRINT LOGIC ---
+        function printCertificate(orientation) {
+            const wrapper = document.getElementById('certificate');
+            const styleTag = document.getElementById('print-page-size') || document.createElement('style');
+            styleTag.id = 'print-page-size';
+            
+            // Remove active outlines from images before printing
+            document.querySelectorAll('.draggable-image').forEach(el => el.classList.remove('active'));
+
+            if (orientation === 'landscape') {
+                wrapper.classList.remove('portrait-mode');
+                wrapper.style.width = '297mm';
+                wrapper.style.minHeight = '210mm';
+                styleTag.innerHTML = '@media print { @page { size: A4 landscape; margin: 0; } }';
+            } else {
+                wrapper.classList.add('portrait-mode');
+                wrapper.style.width = '210mm';
+                wrapper.style.minHeight = '297mm';
+                styleTag.innerHTML = '@media print { @page { size: A4 portrait; margin: 0; } }';
+            }
+            document.head.appendChild(styleTag);
+            
+            setTimeout(() => { window.print(); }, 150);
+        }
+
+        // --- IMAGE ADD / PASTE LOGIC ---
+        let zIndexCounter = 10;
+
+        function handleImageUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) { addImageToCertificate(e.target.result); };
+                reader.readAsDataURL(input.files[0]);
+            }
+            input.value = ''; 
+        }
+
+        document.addEventListener('paste', function (e) {
+            if (e.clipboardData) {
+                const items = e.clipboardData.items;
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf('image') !== -1) {
+                        e.preventDefault(); 
+                        const blob = items[i].getAsFile();
+                        const reader = new FileReader();
+                        reader.onload = function(event) { addImageToCertificate(event.target.result); };
+                        reader.readAsDataURL(blob);
+                        return;
+                    }
+                }
+            }
+        });
+
+        function addImageToCertificate(imgSrc) {
+            const cert = document.getElementById('certificate');
+            
+            const container = document.createElement('div');
+            container.className = 'draggable-image active';
+            container.style.position = 'absolute';
+            container.style.top = '100px';
+            container.style.left = '100px';
+            container.style.zIndex = zIndexCounter++;
+            
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.style.width = '150px';
+            img.style.height = 'auto';
+            img.style.display = 'block';
+            img.style.pointerEvents = 'none'; 
+            
+            const resizer = document.createElement('div');
+            resizer.className = 'resizer';
+            
+            const removeBtn = document.createElement('div');
+            removeBtn.className = 'remove-btn';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = function(e) {
+                e.stopPropagation();
+                container.remove();
+            };
+            
+            container.appendChild(img);
+            container.appendChild(resizer);
+            container.appendChild(removeBtn);
+            cert.appendChild(container);
+            
+            makeDraggable(container);
+            makeResizable(container, img, resizer);
+
+            // Deselect other images
+            document.querySelectorAll('.draggable-image').forEach(el => {
+                if (el !== container) el.classList.remove('active');
+            });
+        }
+
+        // Click outside to deselect
+        document.addEventListener('mousedown', function(e) {
+            if (!e.target.closest('.draggable-image') && !e.target.closest('.controls')) {
+                document.querySelectorAll('.draggable-image').forEach(el => el.classList.remove('active'));
+            }
+        });
+
+        // --- DRAG LOGIC ---
+        function makeDraggable(element) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            element.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                if (e.target.className === 'resizer' || e.target.className === 'remove-btn') return;
+                e.preventDefault();
+                
+                document.querySelectorAll('.draggable-image').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+                element.style.zIndex = zIndexCounter++;
+                
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        // --- RESIZE LOGIC ---
+        function makeResizable(element, img, resizer) {
+            let originalWidth = 0;
+            let originalMouseX = 0;
+            
+            resizer.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                element.classList.add('active');
+                originalWidth = parseFloat(getComputedStyle(img, null).getPropertyValue('width').replace('px', ''));
+                originalMouseX = e.pageX;
+                
+                document.addEventListener('mousemove', resize);
+                document.addEventListener('mouseup', stopResize);
+            });
+            
+            function resize(e) {
+                const width = originalWidth + (e.pageX - originalMouseX);
+                if (width > 20) {
+                    img.style.width = width + 'px';
+                }
+            }
+            
+            function stopResize() {
+                document.removeEventListener('mousemove', resize);
+                document.removeEventListener('mouseup', stopResize);
+            }
+        }
+    </script>
+</body>
+</html>
